@@ -20,20 +20,20 @@ export class InvitationController {
         return;
       }
 
-      // Crear registro RSVP
-      const { error: rsvpError } = await supabase
-        .from('rsvp_status')
-        .insert({
-          invitation_id: invitationId,
-          phone_number: phoneNumber,
-          guest_name: guestName,
-          status: 'pending'
-        });
+      const { data: rsvpData, error: rsvpError } = await supabase
+  .from('rsvp_status')
+  .insert({
+    invitation_id: invitationId,
+    phone_number: phoneNumber,
+    guest_name: guestName,
+    status: 'pending'
+  });
 
-      if (rsvpError) {
-        res.status(500).json({ error: 'Error creando registro RSVP' });
-        return;
-      }
+if (rsvpError) {
+  console.error('Error detallado al crear registro RSVP:', rsvpError);
+  res.status(500).json({ error: 'Error creando registro RSVP', details: rsvpError });
+  return;
+}
 
       // Enviar mensaje por WhatsApp
       const message = `

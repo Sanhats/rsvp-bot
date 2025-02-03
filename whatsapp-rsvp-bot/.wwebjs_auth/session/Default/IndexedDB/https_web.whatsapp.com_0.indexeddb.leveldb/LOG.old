@@ -1,0 +1,15 @@
+2025/02/03-02:19:57.613 368c Reusing MANIFEST C:\Users\Educacion\Documents\GitHub\rsvp-bot\whatsapp-rsvp-bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/02/03-02:19:57.615 368c Recovering log #2044
+2025/02/03-02:19:57.653 368c Reusing old log C:\Users\Educacion\Documents\GitHub\rsvp-bot\whatsapp-rsvp-bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/002044.log 
+2025/02/03-02:20:00.282 558 Level-0 table #2054: started
+2025/02/03-02:20:00.299 558 Level-0 table #2054: 120452 bytes OK
+2025/02/03-02:20:00.303 558 Delete type=0 #2044
+2025/02/03-02:20:00.310 558 Manual compaction at level-0 from '\x002\x00\x00\x00' @ 72057594037927935 : 1 .. '\x003\x00\x00\x00' @ 0 : 0; will stop at '\x002\x00\x00\x05' @ 4806665 : 1
+2025/02/03-02:20:00.311 558 Compacting 1@0 + 2@1 files
+2025/02/03-02:20:00.326 558 Generated table #2055@0: 2773 keys, 55608 bytes
+2025/02/03-02:20:00.341 558 Generated table #2056@0: 2 keys, 1364 bytes
+2025/02/03-02:20:00.348 558 Generated table #2057@0: 50 keys, 5380 bytes
+2025/02/03-02:20:00.348 558 Compacted 1@0 + 2@1 files => 62352 bytes
+2025/02/03-02:20:00.349 558 compacted to: files[ 0 3 47 0 0 0 0 ]
+2025/02/03-02:20:00.350 558 Delete type=2 #2054
+2025/02/03-02:20:00.351 558 Manual compaction at level-0 from '\x002\x00\x00\x05' @ 4806665 : 1 .. '\x003\x00\x00\x00' @ 0 : 0; will stop at (end)
