@@ -47,42 +47,47 @@ class WhatsAppService {
       const { body, from } = message
       const phoneNumber = from.split("@")[0]
 
+      // Solo procesar el mensaje si es una respuesta válida
+      const response = this.processResponse(body.toLowerCase())
+      if (response === null) {
+        // Si no es una respuesta válida, no hacemos nada
+        return
+      }
+
       // Buscar si existe un RSVP pendiente para este número
       const { data: rsvpData, error: rsvpError } = await supabase
         .from("rsvp_status")
         .select("*")
         .eq("phone_number", phoneNumber)
         .eq("status", "pending")
-        .single()
+        .order("created_at", { ascending: false })
+        .limit(1)
 
       if (rsvpError) {
         console.error("Error checking RSVP status:", rsvpError)
-        await message.reply("Lo siento, ha ocurrido un error. Por favor, intenta más tarde.")
         return
       }
 
-      if (rsvpData) {
-        // Procesar respuesta
-        const response = this.processResponse(body.toLowerCase())
-        if (response) {
-          await this.updateRSVPStatus(rsvpData.id, response)
-          await message.reply(
-            `Gracias por tu respuesta. Tu asistencia ha sido marcada como: ${response === "confirmed" ? "Confirmada" : "Declinada"}`,
-          )
-        } else {
-          await message.reply(
-            'Lo siento, no pude entender tu respuesta. Por favor, responde con "Sí" para confirmar o "No" para declinar.',
-          )
+      if (rsvpData && rsvpData.length > 0) {
+        const rsvp = rsvpData[0]
+        // Actualizar el estado del RSVP
+        const { error: updateError } = await supabase
+          .from("rsvp_status")
+          .update({ status: response, updated_at: new Date().toISOString() })
+          .eq("id", rsvp.id)
+
+        if (updateError) {
+          console.error("Error updating RSVP status:", updateError)
+          return
         }
-      } else {
-        // No hay RSVP pendiente para este número
+
         await message.reply(
-          "Lo siento, no tengo ninguna invitación pendiente asociada a este número. Si crees que esto es un error, por favor contacta al anfitrión.",
+          `Gracias por tu respuesta. Tu asistencia ha sido marcada como: ${response === "confirmed" ? "Confirmada" : "Declinada"}`,
         )
       }
+      // Si no hay RSVP pendiente, no hacemos nada
     } catch (error) {
       console.error("Error handling message:", error)
-      await message.reply("Lo siento, ha ocurrido un error. Por favor, intenta más tarde.")
     }
   }
 
@@ -90,25 +95,13 @@ class WhatsAppService {
     const confirmationKeywords = ["si", "sí", "confirmo", "voy", "asistiré", "asistire"]
     const declineKeywords = ["no", "declino", "no puedo", "no podré", "no podre"]
 
-    if (confirmationKeywords.some((keyword) => message.includes(keyword))) {
+    if (confirmationKeywords.some((keyword) => message === keyword)) {
       return "confirmed"
     }
-    if (declineKeywords.some((keyword) => message.includes(keyword))) {
+    if (declineKeywords.some((keyword) => message === keyword)) {
       return "declined"
     }
     return null
-  }
-
-  private async updateRSVPStatus(rsvpId: string, status: string) {
-    const { error } = await supabase
-      .from("rsvp_status")
-      .update({ status, updated_at: new Date().toISOString() })
-      .eq("id", rsvpId)
-
-    if (error) {
-      console.error("Error updating RSVP status:", error)
-      throw error
-    }
   }
 
   public async sendMessage(phoneNumber: string, message: string): Promise<boolean> {

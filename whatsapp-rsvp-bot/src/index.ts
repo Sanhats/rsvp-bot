@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import invitationRoutes from "./routes/invitation.routes"
 import reminderRoutes from "./routes/reminder.routes"
 import rsvpRoutes from "./routes/rsvp.routes"
+import qrRoutes from "./routes/qr.routes"
 
 dotenv.config()
 
@@ -15,6 +16,7 @@ app.use(express.json())
 app.use("/api/invitations", invitationRoutes)
 app.use("/api/reminders", reminderRoutes)
 app.use("/api/rsvp", rsvpRoutes)
+app.use("/api/qr", qrRoutes)
 
 app.get("/", (req, res) => {
   res.send("WhatsApp RSVP Bot is running!")
